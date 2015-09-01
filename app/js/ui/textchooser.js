@@ -134,8 +134,8 @@ var TextChooser = function() {
 				var textInfo = arrayOfTexts[i],
 					hasMatch = 	textInfo.name.toLowerCase().indexOf(text) > -1 ||
 								textInfo.abbr.toLowerCase().indexOf(text) > -1 ||
-								textInfo.langName.toLowerCase().indexOf(text) > -1 ||
-								textInfo.langNameEnglish.toLowerCase().indexOf(text) > -1;
+								(textInfo.langNameEnglish && textInfo.langName.toLowerCase().indexOf(text) > -1) ||
+								(textInfo.langNameEnglish && textInfo.langNameEnglish.toLowerCase().indexOf(text) > -1);
 								
 												
 				if (hasMatch) {
@@ -287,7 +287,9 @@ var TextChooser = function() {
 	
 	function getMode() {
 		if (sofia.config.enableBibleSelectorTabs) { 
-			var mode = listselector.find('.selected').data('mode');
+			var selectedMode = listselector.find('.selected'),
+				mode = selectedMode.length > 0 ? selectedMode.data('mode') : 'none';
+			
 			return mode;
 		} else {
 			return 'none';
@@ -620,13 +622,13 @@ var TextChooser = function() {
 		size();
 		
 		if (filter.val() != '') {
-			filter.val('');
-			if (!Detection.hasTouch) {
-				filter.focus();
-			}		
+			filter.val('');	
 			filterVersions();
 		}
 		
+		if (!Detection.hasTouch) {
+			filter.focus();
+		}			
 		
 	}
 
